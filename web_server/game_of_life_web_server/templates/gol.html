@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Game of Life</title>
+    <script src="static/jquery-2.1.4.min.js"></script>
+    <script src="static/gol.js"></script>
+
+</head>
+<body>
+    <canvas id="gol_canvas"
+            width="{{ width * tile_size }}"
+            height="{{ height * tile_size }}"
+            onclick="toggleTile(event, {{ tile_size }})"></canvas>
+    <br>
+    <button id="start" onclick="startGol()">start</button>
+    <button id="stop" onclick="stopGol()">stop</button>
+
+    <script>
+        setInterval(updateBoardState, {{ tick_period }});
+        setInterval(function() {
+            drawBoard({{ width }}, {{ height }}, {{ tile_size }});
+        }, 50);
+
+    </script>
+</body>
+</html>

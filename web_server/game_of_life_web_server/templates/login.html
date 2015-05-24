@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Log Into Game of Life</title>
+</head>
+<body>
+    {% for flash_msg in get_flashed_messages() %}
+        <div class="flash">{{ flash_msg }}</div>
+    {% endfor %}
+    <form method="POST">
+        {{ form.csrf_token }}
+        {{ form.username.label }} {{ form.username() }} <br>
+        {{ form.password.label }} {{ form.password() }} <br>
+        {{ form.submit() }}
+    </form>
+</body>
+</html>

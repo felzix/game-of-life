@@ -26,7 +26,7 @@ def parse():
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--width', type=int, default=constants.DEFAULT_WIDTH)
     parser.add_argument('--height', type=int, default=constants.DEFAULT_HEIGHT)
-    parser.add_argument('--tick-period', default=constants.TICK_PERIOD)
+    parser.add_argument('--tick-period', type=int, default=constants.TICK_PERIOD)
     parser.add_argument('--redis-server', default=constants.DEFAULT_REDIS_SERVER)
 
     return parser.parse_args()

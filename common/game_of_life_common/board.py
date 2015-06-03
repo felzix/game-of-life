@@ -4,6 +4,7 @@ class GameOfLife(object):
         self.height = height
         self.tiles = make_tiles(width, height)
         self.__other_tiles = make_tiles(width, height)
+        self.iteration = 0
 
     def evolve(self):
         """
@@ -28,6 +29,7 @@ class GameOfLife(object):
                         self.__other_tiles[y][x] = False  # stays dead
         # swap, for next generation
         self.tiles, self.__other_tiles = self.__other_tiles, self.tiles
+        self.iteration += 1
 
     def __neighbor_count(self, x, y):
         neighbors = []

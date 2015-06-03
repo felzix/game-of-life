@@ -116,10 +116,10 @@ def gol():
 @app.route('/gol/state', methods=['GET'])
 @auth.login_required
 def gol_state_get():
-    if datetime.now() - last_board_update >= timedelta(seconds=1):
+    if datetime.now() - last_board_update >= timedelta(milliseconds=tick_period.__subject__):
         # TODO error handling if pickled object differs, requiring web server reload
         board.tiles = pickle.loads(redis_client.get(constants.REDIS_KEY_BOARD))
-    return jsonify(tiles=board.tiles)
+    return jsonify(tiles=board.tiles, iteration=board.iteration)
 
 
 @app.route('/gol/state', methods=['PUT'])

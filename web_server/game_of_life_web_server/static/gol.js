@@ -1,4 +1,5 @@
 var boardState = null;
+var lastBoardIteration = -1;
 var lastBoardUpdateMS = Date.now() - 2000;
 var lastDrawTimeMS = lastBoardUpdateMS;
 
@@ -7,8 +8,11 @@ function updateBoardState() {
     $.ajax({
         url: "/gol/state",
         success: function (result) {
-            boardState = result["tiles"];
-            lastBoardUpdateMS = Date.now()
+            if (result["iteration"] > lastBoardIteration) {
+                lastBoardIteration = result["iteration"];
+                boardState = result["tiles"];
+                lastBoardUpdateMS = Date.now();
+            }
         }
     })
 }

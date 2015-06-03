@@ -12,6 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/gol.db'
 auth = ObjectProxy(HTTPBasicAuth())
 db = ObjectProxy(SQLAlchemy(app))
 board = ObjectProxy(None)
+tick_period = ObjectProxy(None)
 redis_client = ObjectProxy(None)
 
 last_board_update = datetime.now() - timedelta(seconds=2)  # is immediately stale

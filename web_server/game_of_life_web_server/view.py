@@ -5,7 +5,14 @@ import pickle
 from wtforms import PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
 
-from game_of_life_web_server import app, auth, board, db, last_board_update, redis_client
+from game_of_life_web_server import (
+    app,
+    auth,
+    board,
+    db,
+    last_board_update,
+    redis_client,
+    tick_period)
 from game_of_life_web_server.model import hash_password, User
 from game_of_life_common import constants
 
@@ -95,12 +102,14 @@ def login_post():
 @app.route('/gol')
 @auth.login_required
 def gol():
+    assert board, 'Board not initialized'
+    assert tick_period, 'Tick period not initialized'
     return render_template(
         'gol.html',
         width=board.width,
         height=board.height,
         tile_size=constants.TILE_SIZE,
-        tick_period=constants.TICK_PERIOD,
+        tick_period=tick_period,
     )
 
 

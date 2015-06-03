@@ -5,8 +5,8 @@ import pickle
 from wtforms import PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
 
-from game_of_life_web_server import app, board, db, last_board_update, redis_client
-from game_of_life_web_server.model import User
+from game_of_life_web_server import app, auth, board, db, last_board_update, redis_client
+from game_of_life_web_server.model import hash_password, User
 from game_of_life_common import constants
 
 
@@ -68,7 +68,7 @@ def signup():
 def signup_post():
     form = SignUpForm(request.form)
     if form.validate():
-        user = User(username=form.username.data, password=form.password.data)
+        user = User(username=form.username.data, password=hash_password(form.password.data))
         db.session.add(user)
         db.session.commit()
         flash('Welcome!')
@@ -93,6 +93,7 @@ def login_post():
 
 
 @app.route('/gol')
+@auth.login_required
 def gol():
     return render_template(
         'gol.html',
@@ -104,6 +105,7 @@ def gol():
 
 
 @app.route('/gol/state', methods=['GET'])
+@auth.login_required
 def gol_state_get():
     if datetime.now() - last_board_update >= timedelta(seconds=1):
         # TODO error handling if pickled object differs, requiring web server reload
@@ -112,6 +114,7 @@ def gol_state_get():
 
 
 @app.route('/gol/state', methods=['PUT'])
+@auth.login_required
 def gol_state_put():
     x = request.form.get('x')
     y = request.form.get('y')
@@ -121,6 +124,7 @@ def gol_state_put():
 
 
 @app.route('/gol/state', methods=['DELETE'])
+@auth.login_required
 def gol_state_delete():
     x = request.args.get('x')
     y = request.args.get('y')
@@ -130,6 +134,7 @@ def gol_state_delete():
 
 
 @app.route('/gol/running', methods=['PUT'])
+@auth.login_required
 def gol_running_state():
     new_running_state = request.form.get('new_running_state')
     redis_client.set(constants.REDIS_KEY_RUNNING_STATE, new_running_state)

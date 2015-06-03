@@ -1,3 +1,4 @@
+from hashlib import md5
 from sqlalchemy import Column, Integer, String
 
 from game_of_life_web_server import db
@@ -11,8 +12,11 @@ class User(db.Model):
     password = Column(String)
 
     def check_password(self, password_attempt):
-        # TODO hashing
-        return password_attempt == self.password
+        return hash_password(password_attempt) == self.password
 
     def __repr__(self):
        return "<User(name='%s', password='%s')>" % (self.username, self.password)
+
+
+def hash_password(password):
+    return md5(password).hexdigest()

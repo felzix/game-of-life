@@ -4,7 +4,8 @@ from redis import Redis
 from game_of_life_common import constants
 from game_of_life_common.board import GameOfLife
 
-from game_of_life_web_server import app, board, db, redis_client
+from game_of_life_web_server import app, auth, board, db, redis_client
+from game_of_life_web_server.model import hash_password, User
 
 
 def parse():
@@ -15,6 +16,19 @@ def parse():
     parser.add_argument('--redis-server', default=constants.DEFAULT_REDIS_SERVER)
 
     return parser.parse_args()
+
+
+@auth.get_password
+def get_pw(username):
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return None
+    return user.password
+
+
+@auth.hash_password
+def hash_pw(password):
+    return hash_password(password)
 
 
 def setup_db():

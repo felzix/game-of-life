@@ -6,11 +6,13 @@ setup(
     packages = find_packages(),
     install_requires=[
         'flask',
-        'wtforms',
+        'flask-httpauth',
         'flask-sqlalchemy',
         'flask-wtf',
         'proxytypes',
         'redis',
+        'wtforms',
+
         'GameOfLife-Common',
     ],
     author='felzix',

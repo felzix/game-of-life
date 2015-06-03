@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
 import pickle
+from random import getrandbits
 from redis import Redis
 from time import sleep
 
@@ -46,6 +47,7 @@ def parse():
     parser.add_argument(
         '--tick-period', type=int, default=constants.TICK_PERIOD, help='milliseconds')
     parser.add_argument('--redis-server', default=constants.DEFAULT_REDIS_SERVER)
+    parser.add_argument('--random', action='store_true', help='begin random instead of blank')
 
     return parser.parse_args()
 
@@ -67,6 +69,12 @@ def setup_redis(server=constants.DEFAULT_REDIS_SERVER):
 def extract_coordinates(redis_string):
     x, y = redis_string.split(',')
     return int(x), int(y)
+
+
+def randomize_board(board):
+    for y in xrange(board.height):
+        for x in xrange(board.width):
+            board[y][x] = getrandbits(1)
 
 
 def mainloop(board, period, redis_client, debug=False):
@@ -109,6 +117,8 @@ def main():
 
     redis_client = setup_redis()
     board = GameOfLife(namespace.width, namespace.height)
+    if namespace.random:
+        randomize_board(board)
     mainloop(board, namespace.tick_period, redis_client, namespace.debug)
 
 

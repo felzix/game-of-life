@@ -8,11 +8,12 @@ function updateBoardState() {
     $.ajax({
         url: "/gol/state",
         success: function (result) {
-            if (result["iteration"] > lastBoardIteration) {
+            console.log(result);
+            //if (result["iteration"] > lastBoardIteration) {
                 lastBoardIteration = result["iteration"];
                 boardState = result["tiles"];
                 lastBoardUpdateMS = Date.now();
-            }
+            //}
         }
     })
 }

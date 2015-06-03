@@ -11,3 +11,16 @@ The web server caches game state so it only requests once a second at most.
 The web client tries to draw every 50 milliseconds but only request state every second or when it sends an update.
 Like the web server, the web client caches the game state for drawing... though now that I think about it, it should
 just not draw when it has the latest state...
+
+# usage
+
+With engine installed in the virtualenv:
+
+        game-of-life-engine --tick-period 100 --random
+
+With web server installed in the virtualenv:
+
+        game-of-life-web-server --tick-period 100
+
+
+These are examples. Use "-h" on each command for more details.

@@ -1,3 +1,5 @@
+"use strict";
+
 var boardState = null;
 var lastBoardIteration = -1;
 var lastBoardUpdateMS = Date.now() - 2000;
@@ -22,7 +24,7 @@ function updateBoardState() {
 
 
 function drawTile(canvas, tile_size, x, y, state) {
-    context = canvas.getContext("2d");
+    var context = canvas.getContext("2d");
     var x_ = x * tile_size;
     var y_ = y * tile_size;
     if (state) {
@@ -41,8 +43,8 @@ function drawBoard(width, height, tile_size) {
     }
     if (lastBoardUpdateMS > lastDrawTimeMS) {
         var canvas = document.getElementById("gol_canvas");
-        for (y = 0; y < height; y++) {
-            for (x = 0; x < width; x++) {
+        for (var y = 0; y < height; y++) {
+            for (var x = 0; x < width; x++) {
                 var state = boardState[y][x];
                 drawTile(canvas, tile_size, x, y, state);
             }

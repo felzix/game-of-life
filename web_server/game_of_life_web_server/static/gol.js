@@ -9,11 +9,13 @@ function updateBoardState() {
         url: "/gol/state",
         success: function (result) {
             console.log(result);
-            //if (result["iteration"] > lastBoardIteration) {
+            // If result iteration is > than last seen iteration then the board state has updated.
+            // If the result iteration is < the last seen iteration then the board state has reset.
+            if (result["iteration"] != lastBoardIteration) {
                 lastBoardIteration = result["iteration"];
                 boardState = result["tiles"];
                 lastBoardUpdateMS = Date.now();
-            //}
+            }
         }
     })
 }

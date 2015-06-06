@@ -36,7 +36,7 @@ def removed_tiles_from_redis(redis_client):
 
 
 def push_board_to_redis(redis_client, board):
-    redis_client.set(constants.REDIS_KEY_BOARD, pickle.dumps(board.tiles))
+    redis_client.set(constants.REDIS_KEY_BOARD, pickle.dumps(board))
 
 
 def parse():

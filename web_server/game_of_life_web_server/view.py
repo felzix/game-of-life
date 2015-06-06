@@ -118,7 +118,7 @@ def gol():
 def gol_state_get():
     if datetime.now() - last_board_update >= timedelta(milliseconds=tick_period.__subject__):
         # TODO error handling if pickled object differs, requiring web server reload
-        board.tiles = pickle.loads(redis_client.get(constants.REDIS_KEY_BOARD))
+        board.__subject__ = pickle.loads(redis_client.get(constants.REDIS_KEY_BOARD))
     return jsonify(tiles=board.tiles, iteration=board.iteration)
 
 

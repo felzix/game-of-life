@@ -4,21 +4,7 @@ from redis import Redis
 from game_of_life_common import constants
 from game_of_life_common.board import GameOfLife
 
-from game_of_life_web_server import app, auth, board, redis_client, tick_period
-from game_of_life_web_server.model import User
-
-
-@auth.get_password
-def get_pw(username):
-    user = User.from_redis(redis_client, username)
-    if not user:
-        return None
-    return user.password
-
-
-@auth.hash_password
-def hash_pw(password):
-    return User.hash_password(password)
+from game_of_life_web_server import app, board, redis_client, tick_period
 
 
 def parse():

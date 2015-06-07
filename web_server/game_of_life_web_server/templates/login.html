@@ -13,6 +13,7 @@
         {{ form.username.label }} {{ form.username() }} <br>
         {{ form.password.label }} {{ form.password() }} <br>
         {{ form.submit() }}
+        <input type="hidden" id="forward_to" value="{{ forward_to }}">
     </form>
 </body>
 </html>

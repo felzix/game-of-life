@@ -1,17 +1,18 @@
 from datetime import datetime, timedelta
-from flask import flash, jsonify, redirect, render_template, request
+from flask import flash, jsonify, redirect, render_template, request, session
 from flask.ext.wtf import Form
+
 import pickle
 from wtforms import PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
 
 from game_of_life_web_server import (
     app,
-    auth,
     board,
     last_board_update,
     redis_client,
     tick_period)
+from game_of_life_web_server.auth import requires_auth
 from game_of_life_web_server.model import User
 from game_of_life_common import constants
 
@@ -83,21 +84,23 @@ def signup_post():
 
 @app.route('/login', methods=["GET"])
 def login():
-    return render_template('login.html', form=LoginForm())
+    forward_to = request.args.get('forward_to', '/gol')
+    return render_template('login.html', form=LoginForm(), forward_to=forward_to)
 
 
 @app.route('/login', methods=['POST'])
 def login_post():
     form = LoginForm(request.form)
     if form.validate():
-        return redirect('/gol')
+        session['username'] = form.username
+        return redirect(request.form.get('forward_to', '/gol'))
     else:
         flash('Wrong username and/or password!')
         return render_template('login.html', form=form)
 
 
 @app.route('/gol')
-@auth.login_required
+@requires_auth
 def gol():
     assert board, 'Board not initialized'
     assert tick_period, 'Tick period not initialized'
@@ -111,7 +114,7 @@ def gol():
 
 
 @app.route('/gol/state', methods=['GET'])
-@auth.login_required
+@requires_auth
 def gol_state_get():
     if datetime.now() - last_board_update >= timedelta(milliseconds=tick_period.__subject__):
         # TODO error handling if pickled object differs, requiring web server reload
@@ -120,7 +123,7 @@ def gol_state_get():
 
 
 @app.route('/gol/state', methods=['PUT'])
-@auth.login_required
+@requires_auth
 def gol_state_put():
     x = request.form.get('x')
     y = request.form.get('y')
@@ -130,7 +133,7 @@ def gol_state_put():
 
 
 @app.route('/gol/state', methods=['DELETE'])
-@auth.login_required
+@requires_auth
 def gol_state_delete():
     x = request.args.get('x')
     y = request.args.get('y')
@@ -140,8 +143,15 @@ def gol_state_delete():
 
 
 @app.route('/gol/running', methods=['PUT'])
-@auth.login_required
+@requires_auth
 def gol_running_state():
     new_running_state = request.form.get('new_running_state')
     redis_client.set(constants.REDIS_KEY_RUNNING_STATE, new_running_state)
     return 'OK'
+
+
+@app.errorhandler(401)
+def authorization_required(error):
+    """Sends a 401 response that enables basic auth"""
+    flash('Must sign in!')
+    return redirect('/login?forward_to={}'.format(request.url))

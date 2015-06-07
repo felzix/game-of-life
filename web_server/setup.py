@@ -6,7 +6,6 @@ setup(
     packages = find_packages(),
     install_requires=[
         'flask',
-        'flask-httpauth',
         'flask-wtf',
         'proxytypes',
         'redis',

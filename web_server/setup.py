@@ -7,7 +7,6 @@ setup(
     install_requires=[
         'flask',
         'flask-httpauth',
-        'flask-sqlalchemy',
         'flask-wtf',
         'proxytypes',
         'redis',

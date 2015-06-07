@@ -9,11 +9,10 @@ from game_of_life_web_server import (
     app,
     auth,
     board,
-    db,
     last_board_update,
     redis_client,
     tick_period)
-from game_of_life_web_server.model import hash_password, User
+from game_of_life_web_server.model import User
 from game_of_life_common import constants
 
 
@@ -31,7 +30,7 @@ class SignUpForm(Form):
         if not rv:
             return False
 
-        user = User.query.filter_by(username=self.username.data).first()
+        user = User.from_redis(redis_client, self.username.data)
         if user is not None:
             self.username.errors.append('Username already taken')
             return False
@@ -49,7 +48,7 @@ class LoginForm(Form):
         if not rv:
             return False
 
-        user = User.query.filter_by(username=self.username.data).first()
+        user = User.from_redis(redis_client, self.username.data)
         if user is None:
             self.username.errors.append('Username does not exist')
             return False
@@ -75,9 +74,7 @@ def signup():
 def signup_post():
     form = SignUpForm(request.form)
     if form.validate():
-        user = User(username=form.username.data, password=hash_password(form.password.data))
-        db.session.add(user)
-        db.session.commit()
+        User(username=form.username.data, password=form.password.data).to_redis(redis_client)
         flash('Welcome!')
         return redirect('/login')
     else:

@@ -4,13 +4,13 @@ from redis import Redis
 from game_of_life_common import constants
 from game_of_life_common.board import GameOfLife
 
-from game_of_life_web_server import app, auth, board, db, redis_client, tick_period
-from game_of_life_web_server.model import hash_password, User
+from game_of_life_web_server import app, auth, board, redis_client, tick_period
+from game_of_life_web_server.model import User
 
 
 @auth.get_password
 def get_pw(username):
-    user = User.query.filter_by(username=username).first()
+    user = User.from_redis(redis_client, username)
     if not user:
         return None
     return user.password
@@ -18,7 +18,7 @@ def get_pw(username):
 
 @auth.hash_password
 def hash_pw(password):
-    return hash_password(password)
+    return User.hash_password(password)
 
 
 def parse():
@@ -30,10 +30,6 @@ def parse():
     parser.add_argument('--redis-server', default=constants.DEFAULT_REDIS_SERVER)
 
     return parser.parse_args()
-
-
-def setup_db():
-    db.create_all()
 
 
 def setup_tick_period(period):
@@ -54,7 +50,6 @@ def start(debug=False):
 
 def main():
     namespace = parse()
-    setup_db()
     setup_tick_period(namespace.tick_period)
     setup_redis(namespace.redis_server)
     setup_board(namespace.width, namespace.height)

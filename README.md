@@ -1,5 +1,5 @@
 # game-of-life
-Project I wrote to learn flask. Also uses redis and sqlalchemy.
+Project I wrote to learn flask. Also uses redis.
 
 The engine and web server are separately invoked. Their width and height should be the same.
 

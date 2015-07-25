@@ -5,7 +5,6 @@ from peak.util.proxies import ObjectProxy
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'qxI7M2u3dLYXUxn4eS1c'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/gol.db'
 
 board = ObjectProxy(None)
 tick_period = ObjectProxy(None)
